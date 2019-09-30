@@ -214,7 +214,7 @@ DEFINES         += SCRIPTING_DIALOG
 }
 
 ### support for Origin OPJ import using liborigin2
-mxe|osx_dist|aegis {
+mxe|mxe_qt5|osx_dist|aegis {
 CONFIG+=liborigin
 }
 liborigin {
@@ -347,7 +347,9 @@ contains(PRESET, self_contained) {
 }
 
 win32: {
-!mxe {
+if (mxe*) {
+	# do nothing
+} else {
 	### Static linking mostly, except Qt, Python and QwtPlot3D.
 	### The latter seems to be impossible to link statically on Windows.
 
@@ -385,6 +387,18 @@ mxe {
   LIBS += -lopengl32 -lglu32 
 }
 
+mxe_qt5 {
+  DEFINES += CONSOLE
+  DEFINES -= UNICODE _UNICODE
+  QMAKE_CXXFLAGS += "-I$$[QT_INSTALL_HEADERS]/qwt5-qt5"
+  QMAKE_CXXFLAGS += "-I$$[QT_INSTALL_HEADERS]/qwtplot3d-qt5"
+  LIBS +=  -mwindows -lqwt5-qt5 -lqwtplot3d-qt5 -lmuparser -lgsl -lgslcblas
+  LIBS += -lole32 -loleaut32 -limm32 -lcomdlg32 -luuid
+  LIBS += -lwinspool -lssl -lcrypto -lwinmm -lgdi32 -lws2_32
+  LIBS += -ljpeg -lpng -lz
+  LIBS += -lopengl32 -lglu32
+}
+
 # for converage testing
 gcov {
    QMAKE_CXXFLAGS+=-fprofile-arcs -ftest-coverage
@@ -404,8 +418,13 @@ exists(/usr/bin/lupdate-qt4) {
 	LUPDATE_BIN = lupdate-qt4
 	LRELEASE_BIN = lrelease-qt4
 } else {
+mxe | mxe_qt5 {
+	LUPDATE_BIN = true
+	LRELEASE_BIN = true
+} else {
 	# anything else
 	LUPDATE_BIN = lupdate
 	LRELEASE_BIN = lrelease
+}
 }
 

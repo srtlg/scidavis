@@ -19,7 +19,9 @@ DEFINES       += MANUAL_PATH="\\\"$$replace(manual.path," ","\\ ")\\\""
 }
 !isEmpty(plugins.path): DEFINES += PLUGIN_PATH=\\\"$$replace(plugins.path," ","\\ ")\\\"
 
-!mxe {
+if(mxe*) {
+     # do nothing
+} else {
      win32:DEFINES += QT_DLL QT_THREAD_SUPPORT
 }
 QT            += opengl network svg xml

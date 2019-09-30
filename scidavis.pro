@@ -14,7 +14,7 @@ TEMPLATE = subdirs
 
 # configurations that automatically turn on liborigin - mainly the
 # binary releases, as well as the AEGIS build
-mxe|osx_dist {CONFIG += liborigin}
+mxe|mxe_qt5|osx_dist {CONFIG += liborigin}
 aegis|gcov {CONFIG += liborigin test python}
 
 # liborigin must come first, if it exists
@@ -25,7 +25,7 @@ liborigin {
         PKGCONFIG += liborigin
     } else {
         message(liborigin: using own code)
-        SUBDIRS = 3rdparty/liborigin
+        SUBDIRS += 3rdparty/liborigin
     }
 }
 
@@ -35,7 +35,9 @@ test {SUBDIRS += test}
 
 CONFIG+=ordered
 
-!mxe {
+if(mxe*) {
+	# do nothing
+} else {
 # optional fit plugins
 # mxe is a static build, so these are included elsewhere
 SUBDIRS += fitPlugins/fitRational0\
